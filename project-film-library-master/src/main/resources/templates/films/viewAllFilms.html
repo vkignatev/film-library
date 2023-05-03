@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Фильмы из фильмотеки</title>
+    <style>
+        .book-link {
+            text-decoration: none;
+        }
+
+        .book-link:hover {
+            color: #001445;
+        }
+
+        .not-enough-book {
+            color: dodgerblue;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Все фильмы</h1>
+    <div class="row">
+        <div class="col">
+            <a sec:authorize="isAuthenticated() && (hasRole('ADMIN') || hasRole('LIBRARIAN'))"
+               href="films/add"
+               class="btn btn-secondary"
+               role="button"
+               style="float: right"
+               aria-disabled="true">Добавить фильм</a>
+        </div>
+
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Название</th>
+            <th scope="col">Год премьеры</th>
+            <th scope="col">Страна</th>
+            <th scope="col">Жанр</th>
+            <th scope="col">Режиссёр(ы)</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="film : ${films}">
+            <td>
+                <a class="film-link" th:href="'/films/' + ${film.getId()}"
+                   th:text="${film.getFilmTitle()}"></a>
+            </td>
+            <td th:text="${film.getPremierYear()}"></td>
+            <td th:text="${film.getCountry()}"></td>
+            <td th:text="${film.getGenre().getGenreTextDisplay()}"></td>
+            <td>
+                <ul>
+                    <li th:each="director : ${film.getDirectors()}" th:text="${director.getDirectorFio()}"></li>
+                </ul>
+            </td>
+            <td>
+                <!--href="films/add"-->
+                <a class="btn btn-secondary"
+                   role="button"
+                   style="float: right"
+                   aria-disabled="true">добавить режиссёра</a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
